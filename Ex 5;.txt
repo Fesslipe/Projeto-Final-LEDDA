@@ -1,0 +1,162 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct No {
+    int valor;
+    struct No * proximo;
+} No;
+
+typedef struct pilha {
+    struct No * topo;
+    int max_items;
+    int qty;
+} Pilha;
+
+typedef struct queue {
+    No * comeco;
+    No * fim; 
+    int max_items;
+    int qty;
+} Queue;
+
+void printar(Pilha * pilha)
+{
+  No * atual = pilha->topo;
+  for(int i = 0; i<pilha->qty; i++){
+    printf("%d\n", atual->valor);
+    atual = atual->proximo;
+  }
+}
+void mostrarfila(Queue fila)
+{
+    if(fila.qty == 0){
+      printf("Fila está");
+      return;
+    }
+    No * atual = fila.comeco;
+    for(int i = 0; i<fila.qty; i++){
+      printf("%d\n",atual->valor);
+      atual = atual->proximo;
+    }
+}
+
+void push(Pilha * pilha, int valor)
+{
+    if(pilha->max_items == pilha->qty && pilha->qty != 0){
+        printf("Pilha está cheia");
+        return ;
+    }
+    No * atual = (No *) malloc(sizeof(No));
+    atual->valor = valor;
+    atual->proximo = pilha->topo;
+    pilha->topo = atual; 
+    pilha->qty++;
+}
+
+void enqueue(Queue * fila, int valor)
+{
+    if(fila->max_items == fila->qty && fila->qty != 0){
+        printf("Fila está cheia");
+        return ;
+    }
+
+    No * atual = (No *) malloc(sizeof(No));
+    if(fila->qty == 0){
+    atual->valor = valor;
+    fila->comeco = atual;
+    fila->fim = atual;
+    fila->qty++;
+    }else{
+    atual = fila->fim;
+    No * novo = (No *) malloc(sizeof(No));
+    novo->valor = valor;
+    atual->proximo = novo;
+    fila->fim = novo;
+    fila->qty++;
+    }
+}
+
+int pop(Pilha * pilha)
+{
+    No * atual = pilha->topo;
+    int valor = atual->valor;
+    pilha->topo = atual->proximo;
+    pilha->qty--;
+    free(atual);
+    return valor;
+}
+
+int dequeue(Queue * fila)
+{
+    No * atual = fila->comeco;
+    int valor = atual->valor;
+    fila->comeco = atual->proximo;
+    fila->qty--;
+    free(atual);
+    return valor;
+}
+
+int main(void){
+  Pilha *pilha;
+  Queue *queue;
+  pilha->qty = 0;
+  queue->qty = 0;
+  queue->max_items = 20;
+  pilha->max_items = 20;
+  Pilha pilha1;
+  pilha1.max_items = 20;
+  pilha1.qty = 0;
+  Queue filapar;
+  filapar.max_items = 20;
+  filapar.qty = 0;
+  Queue filaimpar;
+  filaimpar.max_items = 20;
+  filaimpar.qty = 0;
+  int opcao;
+  
+  while(1){
+    printf("Digite 0 para sair");
+    printf("Digite um numero: ");
+    scanf("%d", &opcao);
+    if(opcao == 0 )
+      break; 
+    push(&pilha1, opcao);
+  }
+  system("clear");
+
+  printar(&pilha1);
+  No * atual = pilha1.topo; 
+  for(int i = 0; i<pilha1.qty;i++){
+    if(atual->valor % 2 == 0){
+      enqueue(&filapar, atual->valor);
+      atual = atual->proximo;
+    }else{
+      enqueue(&filaimpar, atual->valor);
+      atual = atual->proximo;
+    }
+  }
+  while(1){ 
+    printf("1 - Para mostrar a fila digitada\n");
+    printf("2 - Para mostrar a fila de numeros impares\n");
+    printf("3 - Para mostrar a fila de numeros pares\n");
+    printf("0 - Sair do programa\n");
+    printf("Digite uma opção: ");
+    scanf("%d", &opcao);
+    switch(opcao){
+      case 1:
+        printar(&pilha1);
+      break;
+      case 2:
+        mostrarfila(filaimpar);
+      break;
+      case 3:
+        mostrarfila(filapar);
+      break;
+      case 0:
+      exit(0);
+      break;
+      default:
+        printf("opção invalida!");
+    }
+  }
+}

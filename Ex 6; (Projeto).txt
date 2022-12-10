@@ -1,0 +1,199 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Vinho {
+  char nome[20];
+  char pais[20];
+  char tipoUva[20];
+  int safra;
+} Vinho;
+
+typedef struct No {
+  Vinho vinhu;
+  struct No *prox;
+} No;
+
+typedef struct Adega {
+  No *primeiro;
+  No *ultimo;
+  int qty;
+} Adega;
+
+void Ordenar(Adega *adega) {
+  No *z = adega->primeiro;
+  while (z->prox != NULL) {
+    if (z->vinhu.safra > z->prox->vinhu.safra) {
+      Vinho vinhu1 = z->vinhu;
+      Vinho vinho2 = z->prox->vinhu;
+      z->vinhu = vinho2;
+      z->prox->vinhu = vinhu1;
+    }
+    z = z->prox;
+  }
+}
+
+void Addvinhu(Vinho novovinho, Adega *Adega) {
+  if (Adega->qty == 0) {
+    No *primeirovinho = malloc(sizeof(No));
+    primeirovinho->vinhu = novovinho;
+    Adega->primeiro = primeirovinho;
+    Adega->ultimo = primeirovinho;
+    Adega->qty++;
+  } else {
+    No *novo =  malloc(sizeof(No));
+    novo->vinhu = novovinho;
+    novo->prox = NULL;
+    Adega->ultimo->prox = novo;
+    Adega->ultimo = novo;
+    Adega->qty++;
+  }
+}
+
+void vinho(Adega *adega, Adega *adegaOrdenada) {
+  Vinho novovinho;
+  char Especial;
+  printf("É um vinho especial? s - Sim / N - Nao: ");
+  Especial = getchar();
+  __fpurge(stdin);
+  printf("Digite o nome do vinho: ");
+  fgets(novovinho.nome, 20, stdin);
+  printf("Digite o pais de origem: ");
+  fgets(novovinho.pais, 20, stdin);
+  __fpurge(stdin);
+  printf("Tipo de uva: ");
+  fgets(novovinho.tipoUva, 20, stdin);
+  printf("Digite a Safra: ");
+  __fpurge(stdin);
+  scanf("%d", &novovinho.safra);
+  if (Especial == 's') {
+    Addvinhu(novovinho, adegaOrdenada);
+    Ordenar(adegaOrdenada);
+  } else {
+    Addvinhu(novovinho, adega);
+  }
+} 
+
+void Primeiro(Adega *adega) {
+  No *primeirovinho = adega->primeiro;
+  adega->primeiro = primeirovinho->prox;
+
+  printf("nome do vinho: %s\n", primeirovinho->vinhu.nome);
+  printf("pais de origem: %s\n", primeirovinho->vinhu.pais);
+  printf("tipo de uva: %s\n", primeirovinho->vinhu.tipoUva);
+  printf("safra: %d\n", primeirovinho->vinhu.safra);
+  
+}
+
+void Mostraradega(Adega *adega) {
+  No *z;
+  for (z = adega->primeiro; z != NULL; z = z->prox) {
+    printf("nome do vinho: %s\n", z->vinhu.nome);
+    printf("pais de origem: %s\n", z->vinhu.pais);
+    printf("tipo de uva: %s\n", z->vinhu.tipoUva);
+    printf("safra: %d\n", z->vinhu.safra);
+  }
+}
+
+void Mostrarprimeiros(Adega *adega, Adega *adegaordenada) {
+  Adega nova;
+  nova.qty = 0;
+  No *atual = adega->primeiro;
+  while (atual != NULL) {
+    Addvinhu(atual->vinhu, &nova);
+    Ordenar(&nova);
+    atual = atual->prox;
+  }
+
+  atual = adegaordenada->primeiro;
+  while (atual != NULL) {
+    Addvinhu(atual->vinhu, &nova);
+    Ordenar(&nova);
+    atual = atual->prox;
+  }
+  atual = nova.primeiro;
+  for(int i = 0; i<5; i++){
+    printf("nome do vinho: %s\n", atual->vinhu.nome);
+    printf("pais de origem: %s\n", atual->vinhu.pais);
+    printf("tipo de uva: %s\n", atual->vinhu.tipoUva);
+    printf("safra: %d\n", atual->vinhu.safra);
+    atual = atual->prox;
+  }
+}
+
+void Mostrarultimos(Adega *adega, Adega *adegaOrdenada) {
+  Adega nova;
+  nova.qty = 0;
+  No *atual = adega->primeiro;
+  while (atual != NULL) {
+    Addvinhu(atual->vinhu, &nova);
+    Ordenar(&nova);
+    atual = atual->prox;
+  }
+
+  atual = adegaOrdenada->primeiro;
+  while (atual != NULL) {
+    Addvinhu(atual->vinhu, &nova);
+    Ordenar(&nova);
+      atual = atual->prox;
+  }
+  atual = nova.primeiro;
+  int size = nova.qty;
+  
+  for(int i = 0; i< size-5 ;i++)
+    atual = atual->prox;
+  
+  for(int i = 0; i<5; i++){
+    printf("nome do vinho: %s\n", atual->vinhu.nome);
+    printf("pais de origem: %s\n", atual->vinhu.pais);
+    printf("tipo de uva: %s\n", atual->vinhu.tipoUva);
+    printf("safra: %d\n", atual->vinhu.safra);
+    atual = atual->prox;
+  }
+}
+
+int main(void) {
+  __fpurge(stdin);
+  Adega Adega, AdegaOrdenada;
+  int opt;
+  Adega.qty = 0;
+  AdegaOrdenada.qty = 0;
+
+  while (1) {
+    printf("1 - Adicionar um vinho\n");
+    printf("2 - Retirar vinho\n");
+    printf("3 - Consultar todos os vinhos s/ ocasiao especial\n");
+    printf("4 - Consultar todos os vinhos para ocasioes especiais\n");
+    printf("5 - Mostrar e retirar vinho p/ ocasioes especiais com safra mais "
+           "recente \n");
+    printf("6 - Mostrar 5 aquisições mais antigas\n");
+    printf("7 - Mostrar 5 aquisições mais recentes\n");
+    scanf("%d", &opt);
+    __fpurge(stdin);
+    switch (opt) {
+    case 1:
+      vinho(&Adega, &AdegaOrdenada);
+      break;
+
+    case 2:
+      Primeiro(&Adega);
+      break;
+
+    case 3:
+      Mostraradega(&Adega);
+      break;
+
+    case 4:
+      Mostraradega(&AdegaOrdenada);
+      break;
+    case 5:
+      Primeiro(&AdegaOrdenada);
+      break;
+    case 6:
+      Mostrarprimeiros(&Adega, &AdegaOrdenada);
+      break;
+    case 7:
+      Mostrarultimos(&Adega,&AdegaOrdenada);
+      break;
+    }
+  }
+}

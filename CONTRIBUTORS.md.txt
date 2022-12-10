@@ -1,0 +1,7 @@
+O projeto foi contruído com os contribuires abaixo:
+
+Felipe Queiroz Lopes;
+Vinicius Sena;
+Nicholas;
+
+Cada etapa do desenvolvimento foi contruida com a colocaboração mútua dos membros acima. por conta do tamanho ser pequeno não foi designado funções específicas.
